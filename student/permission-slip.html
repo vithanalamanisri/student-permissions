@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permission Slip | College Permission</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #64748b;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  /* Action bar */
+  .action-bar {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 0.8rem 1.5rem;
+    display: flex; justify-content: space-between;
+    align-items: center; z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap; gap: 0.6rem;
+  }
+  .action-bar-left { display: flex; align-items: center; gap: 10px; color: #e2e8f0; }
+  .action-bar-left i { color: #60a5fa; font-size: 1.2rem; }
+  .action-bar-left strong { font-size: 0.88rem; color: #f1f5f9; }
+  .action-bar-left span { font-size: 0.7rem; color: #94a3b8; display: block; }
+
+  .action-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .btn-action {
+    padding: 0.55rem 1.1rem; border-radius: 9px;
+    font-size: 0.78rem; font-weight: 700;
+    cursor: pointer; border: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: 0.15s; font-family: inherit;
+  }
+  .btn-action.primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    box-shadow: 0 6px 16px -6px #3b82f680;
+  }
+  .btn-action.primary:hover { transform: translateY(-2px); }
+  .btn-action.primary:disabled {
+    background: #64748b;
+    cursor: not-allowed;
+    opacity: 0.5;
+    box-shadow: none;
+  }
+  .btn-action.outline {
+    background: rgba(255,255,255,0.1);
+    color: #e2e8f0;
+    border: 1.5px solid rgba(255,255,255,0.2);
+  }
+  .btn-action.outline:hover { background: rgba(255,255,255,0.18); }
+
+  .slip-wrapper {
+    max-width: 800px;
+    width: 100%;
+    margin-top: 70px;
+  }
+
+  /* THE PAPER */
+  .permission-slip {
+    background: #ffffff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px -15px rgba(0,0,0,0.35), 0 8px 20px -8px rgba(0,0,0,0.2);
+    position: relative;
+    border: 1px solid #94a3b8;
+  }
+
+  .permission-slip::before {
+    content: 'BVCITS';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-30deg);
+    font-size: 11rem;
+    font-weight: 900;
+    color: #1e3a8a;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 0;
+    letter-spacing: 0.06em;
+  }
+
+  /* HEADER */
+  .slip-header {
+    padding: 1.5rem 2rem 1rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
+    border-bottom: 4px double #0284c7;
+    position: relative;
+    z-index: 2;
+  }
+
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .college-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+  }
+
+  .college-logo {
+    width: 62px; height: 62px;
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fbbf24;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px -6px #1e3a8a80;
+  }
+
+  .college-text h1 {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #1e3a8a;
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  .college-text .sub {
+    font-size: 0.7rem;
+    color: #0369a1;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .id-box {
+    text-align: right;
+    padding: 0.55rem 0.9rem;
+    background: white;
+    border: 1.5px solid #0284c7;
+    border-radius: 8px;
+  }
+
+  .id-box label {
+    font-size: 0.58rem;
+    color: #0369a1;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+  }
+
+  .id-box .perm-id {
+    font-size: 0.95rem;
+    font-weight: 900;
+    color: #1e3a8a;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.03em;
+    margin-top: 2px;
+  }
+
+  .slip-title {
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: #1e3a8a;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 0.6rem 0;
+    border-top: 1px solid #bae6fd;
+    border-bottom: 1px solid #bae6fd;
+    margin-top: 0.8rem;
+    background: white;
+  }
+
+  /* BODY */
+  .slip-body {
+    padding: 1.6rem 2rem 1.4rem;
+    position: relative;
+    z-index: 2;
+    background: white;
+  }
+
+  .slip-grid {
+    display: grid;
+    grid-template-columns: 130px 1fr 175px;
+    gap: 1.4rem;
+    align-items: start;
+  }
+
+  /* STUDENT PHOTO */
+  .student-photo-box { text-align: center; }
+
+  .student-photo {
+    width: 120px;
+    height: 140px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 800;
+    overflow: hidden;
+    box-shadow: 0 8px 20px -8px #1e3a8a80;
+    border: 3px solid white;
+    outline: 1.5px solid #0284c7;
+    margin: 0 auto;
+  }
+
+  .student-photo img { width: 100%; height: 100%; object-fit: cover; }
+
+  .photo-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    color: #0369a1;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    margin-top: 8px;
+  }
+
+  /* Details */
+  .details-side .detail-row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 0.4rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px dotted #cbd5e1;
+    font-size: 0.84rem;
+  }
+
+  .details-side .detail-row:last-child { border-bottom: none; }
+
+  .detail-row .label {
+    color: #475569;
+    font-weight: 700;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding-top: 2px;
+  }
+
+  .detail-row .value {
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 0.86rem;
+    word-break: break-word;
+  }
+
+  /* QR Side */
+  .qr-side { text-align: center; }
+
+  .qr-frame {
+    background: white;
+    border: 3px solid #1e3a8a;
+    border-radius: 10px;
+    padding: 10px;
+    display: inline-block;
+    box-shadow: 0 8px 20px -8px #1e3a8a60;
+    position: relative;
+    min-width: 165px;
+    min-height: 165px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .qr-frame::after {
+    content: '';
+    position: absolute;
+    top: -8px; left: -8px; right: -8px; bottom: -8px;
+    border: 2px solid #f59e0b;
+    border-radius: 16px;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  #qrcode { width: 145px; height: 145px; }
+  #qrcode img { width: 100% !important; height: 100% !important; }
+
+  .qr-locked {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #94a3b8;
+    padding: 1rem;
+  }
+  .qr-locked i { font-size: 2.6rem; color: #cbd5e1; }
+  .qr-locked span { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; }
+
+  .qr-label {
+    font-size: 0.6rem;
+    color: #475569;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 10px;
+  }
+
+  .qr-id-text {
+    font-size: 0.68rem;
+    font-weight: 900;
+    color: #1e3a8a;
+    font-family: 'Courier New', monospace;
+    margin-top: 4px;
+    letter-spacing: 0.04em;
+  }
+
+  .qr-hint {
+    font-size: 0.6rem;
+    color: #64748b;
+    margin-top: 6px;
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  /* FOOTER */
+  .slip-footer {
+    padding: 1.2rem 2rem 1.4rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #dbeafe 100%);
+    border-top: 4px double #0284c7;
+    position: relative;
+    z-index: 2;
+  }
+
+  .verify-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .verify-card {
+    background: white;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    border: 1.5px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: 0.2s;
+  }
+
+  .verify-card.pending {
+    border-color: #fbbf24;
+    background: #fffbeb;
+  }
+  .verify-card.approved {
+    border-color: #86efac;
+    background: #f0fdf4;
+  }
+  .verify-card.rejected {
+    border-color: #fca5a5;
+    background: #fef2f2;
+  }
+
+  .verify-check {
+    width: 34px; height: 34px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .verify-card.approved .verify-check { background: #dcfce7; color: #15803d; }
+  .verify-card.pending .verify-check { background: #fef3c7; color: #d97706; }
+  .verify-card.rejected .verify-check { background: #fee2e2; color: #dc2626; }
+
+  .verify-info strong {
+    display: block;
+    font-size: 0.76rem;
+    color: #0f172a;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+  }
+
+  .verify-info span {
+    display: block;
+    font-size: 0.66rem;
+    color: #475569;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .verify-tag {
+    display: inline-block;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 0.56rem;
+    font-weight: 900;
+    padding: 2px 7px;
+    border-radius: 10px;
+    margin-top: 4px;
+    letter-spacing: 0.08em;
+  }
+  .verify-card.approved .verify-tag { background: #dcfce7; color: #15803d; }
+  .verify-card.pending .verify-tag { background: #fef3c7; color: #d97706; }
+  .verify-card.rejected .verify-tag { background: #fee2e2; color: #dc2626; }
+
+  /* Status stamp */
+  .status-stamp {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.2rem;
+    border-radius: 10px;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border: 2.5px solid #cbd5e1;
+    background: #f8fafc;
+  }
+
+  .status-stamp.pending {
+    background: #fffbeb;
+    border-color: #f59e0b;
+  }
+  .status-stamp.approved {
+    background: #dcfce7;
+    border-color: #15803d;
+  }
+  .status-stamp.rejected {
+    background: #fef2f2;
+    border-color: #dc2626;
+  }
+
+  .stamp-left { display: flex; align-items: center; gap: 10px; }
+
+  .stamp-icon {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    background: #64748b;
+    color: white;
+  }
+  .status-stamp.pending .stamp-icon { background: #d97706; }
+  .status-stamp.approved .stamp-icon { background: #15803d; }
+  .status-stamp.rejected .stamp-icon { background: #dc2626; }
+
+  .stamp-text strong {
+    display: block;
+    font-size: 0.98rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    color: #334155;
+  }
+  .status-stamp.pending .stamp-text strong { color: #92400e; }
+  .status-stamp.approved .stamp-text strong { color: #065f46; }
+  .status-stamp.rejected .stamp-text strong { color: #991b1b; }
+
+  .stamp-text span {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    margin-top: 2px;
+    color: #64748b;
+  }
+  .status-stamp.pending .stamp-text span { color: #b45309; }
+  .status-stamp.approved .stamp-text span { color: #15803d; }
+  .status-stamp.rejected .stamp-text span { color: #dc2626; }
+
+  .stamp-right {
+    text-align: right;
+    font-size: 0.66rem;
+    font-weight: 600;
+    color: #64748b;
+  }
+
+  .stamp-right strong {
+    color: #0f172a;
+    font-size: 0.75rem;
+    display: block;
+    font-family: 'Courier New', monospace;
+    margin-top: 2px;
+  }
+
+  .slip-note {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: #fef3d6;
+    border-left: 3px solid #f59e0b;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    color: #92400e;
+    font-weight: 600;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .slip-note i { margin-top: 2px; flex-shrink: 0; }
+
+  .bottom-strip {
+    padding: 0.65rem 2rem;
+    background: #1e3a8a;
+    color: #bae6fd;
+    font-size: 0.62rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .bottom-strip span { display: flex; align-items: center; gap: 5px; }
+
+  .toast-alert {
+    position: fixed;
+    top: 90px; right: 20px;
+    z-index: 200;
+    padding: 0.85rem 1.2rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 12px 30px -10px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    max-width: 360px;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @media (max-width: 700px) {
+    body { padding: 1rem; }
+    .slip-wrapper { margin-top: 60px; }
+    .slip-header { padding: 1.2rem 1.3rem 0.9rem; }
+    .college-logo { width: 48px; height: 48px; font-size: 1.4rem; }
+    .college-text h1 { font-size: 0.95rem; }
+    .id-box .perm-id { font-size: 0.8rem; }
+    .slip-body { padding: 1.2rem 1.3rem; }
+    .slip-grid { grid-template-columns: 1fr; gap: 1.3rem; text-align: center; }
+    .student-photo { width: 110px; height: 130px; }
+    #qrcode { width: 140px; height: 140px; }
+    .slip-footer { padding: 1rem 1.3rem; }
+    .verify-grid { grid-template-columns: 1fr; }
+    .action-bar { padding: 0.65rem 1rem; }
+    .btn-action { padding: 0.45rem 0.8rem; font-size: 0.7rem; }
+    .details-side .detail-row { grid-template-columns: 1fr; gap: 2px; }
+  }
+
+  @media (max-width: 450px) {
+    .btn-action span { display: none; }
+    .btn-action { padding: 0.5rem 0.65rem; }
+  }
+
+  /* PRINT */
+  @media print {
+    body { background: white !important; padding: 0; display: block; }
+    .action-bar, .toast-alert { display: none !important; }
+    .slip-wrapper { margin: 0; max-width: 100%; }
+    .permission-slip {
+      box-shadow: none;
+      border: 1.5px solid #0f172a;
+      border-radius: 0;
+      page-break-inside: avoid;
+    }
+    .permission-slip::before { opacity: 0.05; }
+    @page { margin: 1cm; size: A4; }
+  }
+</style>
+</head>
+<body>
+<!-- Action Bar -->
+<div class="action-bar">
+  <div class="action-bar-left">
+    <i class="fas fa-ticket-alt"></i>
+    <div>
+      <strong>Digital Permission Slip</strong>
+      <span id="slipStatusText">Loading...</span>
+    </div>
+  </div>
+  <div class="action-buttons">
+    <button class="btn-action outline" onclick="goBack()"><i class="fas fa-arrow-left"></i> <span>Back</span></button>
+    <button class="btn-action primary" id="downloadBtn" onclick="downloadSlip()" disabled><i class="fas fa-download"></i> <span>Download</span></button>
+    <button class="btn-action outline" id="printBtn" onclick="printSlip()" disabled><i class="fas fa-print"></i> <span>Print</span></button>
+    <button class="btn-action outline" onclick="shareSlip()"><i class="fas fa-share"></i> <span>Share</span></button>
+  </div>
+</div>
+
+<!-- Slip -->
+<div class="slip-wrapper">
+  <div class="permission-slip" id="permissionSlip">
+    <!-- HEADER -->
+    <div class="slip-header">
+      <div class="header-top">
+        <div class="college-info">
+          <div class="college-logo"><i class="fas fa-graduation-cap"></i></div>
+          <div class="college-text">
+            <h1>BVCITS · College Permission</h1>
+            <div class="sub">Official Digital Permission Slip</div>
+          </div>
+        </div>
+        <div class="id-box">
+          <label>Permission ID</label>
+          <div class="perm-id" id="permIdDisplay">--</div>
+        </div>
+      </div>
+      <div class="slip-title" id="slipTitleText">Permission Request</div>
+    </div>
+
+    <!-- BODY -->
+    <div class="slip-body">
+      <div class="slip-grid">
+        <!-- STUDENT PHOTO -->
+        <div class="student-photo-box">
+          <div class="student-photo" id="studentPhotoDisplay">
+            <span id="studentInitials">--</span>
+          </div>
+          <div class="photo-label">Student Photo</div>
+        </div>
+
+        <!-- DETAILS -->
+        <div class="details-side">
+          <div class="detail-row">
+            <span class="label">Student Name</span>
+            <span class="value" id="dName">--</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Register No</span>
+            <span class="value" id="dRegNo">--</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Branch · Section</span>
+            <span class="value" id="dBranchSection">--</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Reason</span>
+            <span class="value" id="dReason">--</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Destination</span>
+            <span class="value" id="dDestination">--</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Date</span>
+            <span class="value" id="dDate">--</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Out Time</span>
+            <span class="value" id="dOutTime">--</span>
+          </div>
+        </div>
+
+        <!-- QR -->
+        <div class="qr-side">
+          <div class="qr-frame">
+            <div id="qrcode"></div>
+          </div>
+          <div class="qr-label" id="qrLabel">Scan at Gate</div>
+          <div class="qr-id-text" id="qrIdDisplay">--</div>
+          <div class="qr-hint" id="qrHint">Security verifies here</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="slip-footer">
+      <div class="verify-grid">
+        <div class="verify-card" id="teacherCard">
+          <div class="verify-check"><i class="fas fa-clock" id="teacherIcon"></i></div>
+          <div class="verify-info">
+            <strong>Class Teacher</strong>
+            <span id="vTeacherName">Pending</span>
+            <span class="verify-tag" id="teacherTag">⏳ PENDING</span>
+          </div>
+        </div>
+        <div class="verify-card" id="hodCard">
+          <div class="verify-check"><i class="fas fa-clock" id="hodIcon"></i></div>
+          <div class="verify-info">
+            <strong>HOD Approval</strong>
+            <span id="vHODName">Pending</span>
+            <span class="verify-tag" id="hodTag">⏳ PENDING</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="status-stamp" id="statusStamp">
+        <div class="stamp-left">
+          <div class="stamp-icon" id="stampIcon"><i class="fas fa-clock"></i></div>
+          <div class="stamp-text">
+            <strong id="stampTitle">⏳ AWAITING TEACHER APPROVAL</strong>
+            <span id="stampSubtitle">Your request is being reviewed</span>
+          </div>
+        </div>
+        <div class="stamp-right">
+          <span>Issued At</span>
+          <strong id="issuedAt">--</strong>
+        </div>
+      </div>
+
+      <div class="slip-note">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="noteText">Show this slip at the college gate. Valid only after both Teacher and HOD approvals.</span>
+      </div>
+    </div>
+
+    <!-- BOTTOM -->
+    <div class="bottom-strip">
+      <span><i class="fas fa-qrcode"></i> QR-ENABLED SLIP</span>
+      <span><i class="fas fa-lock"></i> TEACHER + HOD VERIFIED</span>
+      <span><i class="fas fa-clock"></i> AUTO-EXPIRES</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentPermission = null;
+  let currentStudent = null;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const session = localStorage.getItem('cps_currentUser');
+    if (!session) { window.location.replace('../index.html'); return; }
+    const user = JSON.parse(session);
+    if (user.role !== 'student') { window.location.replace('../index.html'); return; }
+    currentStudent = user;
+    loadSlip();
+  });
+
+  function loadSlip() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestedId = urlParams.get('id');
+    const allPermissions = JSON.parse(localStorage.getItem('cps_permissions') || '[]');
+    const myPermissions = allPermissions.filter(p => p.regNo === currentStudent.regNo);
+
+    let permission;
+    if (requestedId) permission = myPermissions.find(p => p.permissionId === requestedId);
+    if (!permission) {
+      // newest first
+      permission = myPermissions.sort((a, b) =>
+        new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0)
+      )[0];
+    }
+    if (!permission) permission = createDemoSlip();
+    currentPermission = permission;
+    renderSlip(permission);
+    generateQR(permission);
+  }
+
+  function createDemoSlip() {
+    return {
+      permissionId: 'PER-2026-00125',
+      regNo: currentStudent.regNo || '24A91A0512',
+      fullName: currentStudent.fullName || 'Manisri Vithanala',
+      branch: currentStudent.branch || 'AIML',
+      section: currentStudent.section || 'A',
+      photo: currentStudent.photo || null,
+      type: 'Medical',
+      reason: 'Medical Appointment',
+      destination: 'Rajahmundry',
+      date: new Date().toISOString().split('T')[0],
+      outTime: '10:30',
+      status: 'pending_teacher_verification',  // ✅ DEFAULT PENDING
+      submittedAt: new Date().toISOString(),
+      teacherName: null,
+      hodApprovedBy: null
+    };
+  }
+
+  function renderSlip(p) {
+    document.getElementById('permIdDisplay').textContent = p.permissionId || '--';
+    document.getElementById('qrIdDisplay').textContent = p.permissionId || '--';
+
+    // Photo
+    const initials = (p.fullName || 'S').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+    const photoEl = document.getElementById('studentPhotoDisplay');
+    if (p.photo) {
+      photoEl.innerHTML = `<img src="${p.photo}" alt="Student Photo">`;
+    } else {
+      photoEl.innerHTML = `<span>${initials}</span>`;
+    }
+
+    document.getElementById('dName').textContent = p.fullName || '--';
+    document.getElementById('dRegNo').textContent = p.regNo || '--';
+    document.getElementById('dBranchSection').textContent = (p.branch || '--') + ' · ' + (p.section || 'No Section');
+    document.getElementById('dReason').textContent = p.reason || p.type || '--';
+    document.getElementById('dDestination').textContent = p.destination || '--';
+    document.getElementById('dDate').textContent = formatDate(p.date || p.submittedAt);
+    document.getElementById('dOutTime').textContent = formatTime(p.outTime);
+    document.getElementById('issuedAt').textContent = formatDateTime(p.submittedAt);
+
+    const status = p.status || 'pending_teacher_verification';
+    const isApproved = (status === 'hod_approved' || status === 'approved' || status === 'out' || status === 'returned');
+    const isRejected = (status === 'rejected' || status === 'teacher_rejected' || status === 'hod_rejected');
+    const isTeacherApproved = (status === 'teacher_approved' || isApproved);
+
+    /* ---------- TEACHER CARD ---------- */
+    const tCard = document.getElementById('teacherCard');
+    const tIcon = document.getElementById('teacherIcon');
+    const tTag  = document.getElementById('teacherTag');
+    const tName = document.getElementById('vTeacherName');
+    tCard.className = 'verify-card';
+    if (isRejected && status.includes('teacher')) {
+      tCard.classList.add('rejected');
+      tIcon.className = 'fas fa-times';
+      tTag.textContent = '✗ REJECTED';
+      tTag.style.background = '#fee2e2';
+      tTag.style.color = '#dc2626';
+      tName.textContent = p.teacherName || 'Rejected';
+    } else if (isTeacherApproved) {
+      tCard.classList.add('approved');
+      tIcon.className = 'fas fa-check';
+      tTag.textContent = '✓ VERIFIED';
+      tTag.style.background = '#dcfce7';
+      tTag.style.color = '#15803d';
+      tName.textContent = p.teacherName || p.verifiedBy || 'Class Teacher';
+    } else {
+      tCard.classList.add('pending');
+      tIcon.className = 'fas fa-clock';
+      tTag.textContent = '⏳ PENDING';
+      tTag.style.background = '#fef3c7';
+      tTag.style.color = '#d97706';
+      tName.textContent = 'Awaiting Teacher';
+    }
+
+    /* ---------- HOD CARD ---------- */
+    const hCard = document.getElementById('hodCard');
+    const hIcon = document.getElementById('hodIcon');
+    const hTag  = document.getElementById('hodTag');
+    const hName = document.getElementById('vHODName');
+    hCard.className = 'verify-card';
+    if (isRejected && status.includes('hod')) {
+      hCard.classList.add('rejected');
+      hIcon.className = 'fas fa-times';
+      hTag.textContent = '✗ REJECTED';
+      hTag.style.background = '#fee2e2';
+      hTag.style.color = '#dc2626';
+      hName.textContent = p.hodName || 'Rejected';
+    } else if (isApproved) {
+      hCard.classList.add('approved');
+      hIcon.className = 'fas fa-check';
+      hTag.textContent = '✓ APPROVED';
+      hTag.style.background = '#dcfce7';
+      hTag.style.color = '#15803d';
+      hName.textContent = p.hodApprovedBy || p.hodName || 'HOD';
+    } else {
+      hCard.classList.add('pending');
+      hIcon.className = 'fas fa-clock';
+      hTag.textContent = '⏳ PENDING';
+      hTag.style.background = '#fef3c7';
+      hTag.style.color = '#d97706';
+      hName.textContent = 'Awaiting HOD';
+    }
+
+    /* ---------- STATUS STAMP ---------- */
+    const stamp = document.getElementById('statusStamp');
+    const stampIcon = document.getElementById('stampIcon');
+    const stampTitle = document.getElementById('stampTitle');
+    const stampSub = document.getElementById('stampSubtitle');
+    const slipTitle = document.getElementById('slipTitleText');
+    const noteText = document.getElementById('noteText');
+    stamp.className = 'status-stamp';
+
+    if (isApproved) {
+      stamp.classList.add('approved');
+      stampIcon.className = 'fas fa-shield-alt';
+      stampTitle.textContent = '✓ APPROVED · VALID';
+      stampSub.textContent = 'Authorized for campus exit';
+      slipTitle.textContent = 'Authorized Campus Exit Pass';
+      noteText.textContent = 'Show this slip at the college gate. Valid only for the mentioned date & time. Expired slips will be rejected by security.';
+    } else if (isRejected) {
+      stamp.classList.add('rejected');
+      stampIcon.className = 'fas fa-times-circle';
+      stampTitle.textContent = '✗ REJECTED';
+      stampSub.textContent = p.rejectionReason || 'Your request was declined';
+      slipTitle.textContent = 'Permission Request — Rejected';
+      noteText.textContent = 'This request has been rejected. You may submit a new request from your dashboard.';
+    } else if (isTeacherApproved) {
+      stamp.classList.add('pending');
+      stampIcon.className = 'fas fa-hourglass-half';
+      stampTitle.textContent = '⏳ AWAITING HOD APPROVAL';
+      stampSub.textContent = 'Teacher approved · Sent to HOD';
+      slipTitle.textContent = 'Permission Request — Pending HOD';
+      noteText.textContent = 'Your teacher has approved. Waiting for HOD final approval before the slip is valid.';
+    } else {
+      stamp.classList.add('pending');
+      stampIcon.className = 'fas fa-clock';
+      stampTitle.textContent = '⏳ AWAITING TEACHER APPROVAL';
+      stampSub.textContent = 'Your request is being reviewed';
+      slipTitle.textContent = 'Permission Request — Pending Teacher';
+      noteText.textContent = 'Your teacher needs to approve this request first. Then it goes to the HOD for final approval.';
+    }
+
+    /* ---------- ACTION BAR STATUS ---------- */
+    let statusLabel = 'Pending';
+    if (isApproved) statusLabel = 'Approved';
+    else if (isRejected) statusLabel = 'Rejected';
+    else if (isTeacherApproved) statusLabel = 'Awaiting HOD';
+    else statusLabel = 'Awaiting Teacher';
+    document.getElementById('slipStatusText').textContent =
+      `${p.permissionId} · ${p.fullName || ''} · ${statusLabel}`;
+
+    /* ---------- ENABLE/DISABLE BUTTONS ---------- */
+    const dlBtn = document.getElementById('downloadBtn');
+    const prBtn = document.getElementById('printBtn');
+    if (isApproved) {
+      dlBtn.disabled = false;
+      prBtn.disabled = false;
+    } else {
+      dlBtn.disabled = true;
+      prBtn.disabled = true;
+    }
+  }
+
+  function generateQR(permission) {
+    const qrContainer = document.getElementById('qrcode');
+    const qrLabel = document.getElementById('qrLabel');
+    const qrHint = document.getElementById('qrHint');
+    const status = permission.status || 'pending_teacher_verification';
+    const isApproved = (status === 'hod_approved' || status === 'approved' || status === 'out' || status === 'returned');
+
+    qrContainer.innerHTML = '';
+
+    if (!isApproved) {
+      // 🔒 Show lock — no QR until HOD approval
+      qrContainer.innerHTML = `
+        <div class="qr-locked">
+          <i class="fas fa-lock"></i>
+          <span>QR locked</span>
+        </div>`;
+      qrLabel.textContent = 'Not Available';
+      qrHint.textContent = 'Available after HOD approval';
+      return;
+    }
+
+    // ✅ Approved — generate real QR
+    const qrData = JSON.stringify({
+      id: permission.permissionId,
+      type: 'permission_slip',
+      regNo: permission.regNo,
+      name: permission.fullName,
+      date: permission.date,
+      outTime: permission.outTime,
+      issued: new Date().toISOString()
+    });
+    try {
+      new QRCode(qrContainer, {
+        text: qrData,
+        width: 145,
+        height: 145,
+        colorDark: '#1e3a8a',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      qrLabel.textContent = 'Scan at Gate';
+      qrHint.textContent = 'Security verifies here';
+    } catch (e) {
+      qrContainer.innerHTML = '<i class="fas fa-qrcode" style="font-size:4rem; color:#1e3a8a;"></i>';
+    }
+  }
+
+  async function downloadSlip() {
+    if (document.getElementById('downloadBtn').disabled) {
+      showToast('Slip not available yet — waiting for approvals.', 'info');
+      return;
+    }
+    showToast('Preparing download...', 'info');
+    try {
+      const slipElement = document.getElementById('permissionSlip');
+      const canvas = await html2canvas(slipElement, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        useCORS: true,
+        logging: false
+      });
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Permission-Slip-${currentPermission.permissionId}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('✅ Downloaded as PNG!', 'success');
+      }, 'image/png');
+    } catch (e) {
+      showToast('Download failed. Use Print.', 'error');
+    }
+  }
+
+  function printSlip() {
+    if (document.getElementById('printBtn').disabled) {
+      showToast('Slip not available yet — waiting for approvals.', 'info');
+      return;
+    }
+    showToast('Opening print dialog...', 'info');
+    setTimeout(() => window.print(), 400);
+  }
+
+  async function shareSlip() {
+    const p = currentPermission;
+    const status = p.status || 'pending';
+    const isApproved = (status === 'hod_approved' || status === 'approved' || status === 'out' || status === 'returned');
+    const shareData = {
+      title: 'College Permission Slip',
+      text: `Permission ID: ${p.permissionId}\nStudent: ${p.fullName}\nStatus: ${isApproved ? 'APPROVED' : 'PENDING'}\nReason: ${p.reason}\nDate: ${formatDate(p.date)}\nOut Time: ${formatTime(p.outTime)}`,
+      url: window.location.href
+    };
+    if (navigator.share) {
+      try { await navigator.share(shareData); showToast('✅ Slip shared!', 'success'); }
+      catch (e) { if (e.name !== 'AbortError') fallbackShare(shareData); }
+    } else { fallbackShare(shareData); }
+  }
+
+  function fallbackShare(shareData) {
+    const text = shareData.text + '\n' + shareData.url;
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('📋 Details copied to clipboard!', 'success');
+    }).catch(() => showToast('Sharing not available.', 'info'));
+  }
+
+  function goBack() { window.location.href = 'dashboard.html'; }
+
+  function formatDate(iso) {
+    if (!iso) return '--';
+    try { return new Date(iso).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }); }
+    catch (e) { return iso; }
+  }
+
+  function formatDateTime(iso) {
+    if (!iso) return '--';
+    try { return new Date(iso).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+    catch (e) { return iso; }
+  }
+
+  function formatTime(time24) {
+    if (!time24) return '--';
+    try {
+      const [h, m] = time24.split(':');
+      const hour = parseInt(h);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const h12 = hour % 12 || 12;
+      return `${h12}:${m} ${ampm}`;
+    } catch (e) { return time24; }
+  }
+
+  function showToast(message, type = 'info') {
+    const colors = {
+      success: { bg: '#dcfce7', color: '#166534', border: '#bbf7d0', icon: 'fa-check-circle' },
+      error: { bg: '#fee2e2', color: '#991b1b', border: '#fecaca', icon: 'fa-exclamation-circle' },
+      info: { bg: '#dbeafe', color: '#1e40af', border: '#bfdbfe', icon: 'fa-info-circle' }
+    };
+    const c = colors[type] || colors.info;
+    const existing = document.querySelector('.toast-alert');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'toast-alert';
+    toast.style.background = c.bg;
+    toast.style.color = c.color;
+    toast.style.border = '1px solid ' + c.border;
+    toast.innerHTML = `<i class="fas ${c.icon}"></i> <span>${message}</span>`;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.transition = '0.3s';
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(30px)';
+      setTimeout(() => toast.remove(), 300);
+    }, 3200);
+  }
+</script>
+</body>
+</html>
